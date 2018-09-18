@@ -279,7 +279,7 @@
 					$('#messages').append('<li><button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><a href='+e.target.result+' data-fancybox="'+nickname+'-fancybox-sent"><img class="uploaded_img" src='+e.target.result+'></a></li>');
 					fancyboxConfig();															
 				}else if(extensions.indexOf(fileType)>3){
-					$('#messages').append('<li><button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><br><a href="'+e.target.result+'" download='+fileName+'>'+fileName+'</a></li>');					
+					$('#messages').append('<li><button style="background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><br><a href="'+e.target.result+'" download='+fileName+'>'+fileName+'</a></li>');					
 				}	
 				scrollToBottom();			
 			}
