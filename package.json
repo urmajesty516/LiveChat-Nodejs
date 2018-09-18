@@ -1,0 +1,25 @@
+{
+  "name": "socket-chatroom",
+  "version": "0.0.1",
+  "description": "my first socket.io app",
+  "author": "Janice Zhong",
+  "license": "MIT",
+  "dependencies": {
+	"express": "v4.16.3",
+	"socket.io": "v2.1.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+	
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urmajesty516/socket-chatroom.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/urmajesty516/socket-chatroom/issues"
+  },
+  "homepage": "https://github.com/urmajesty516/socket-chatroom#readme"
+}

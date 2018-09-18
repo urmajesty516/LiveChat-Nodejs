@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="/jquery.fancybox.min.css">
+  </head>
+  <body>
+	<form id="login" action="/" method="GET">
+
+		<ul id="client_login">
+			<li><h3>Login</h3></li>
+			<li><label>Client Name: </label><input id="clientName" name="clientName" class="fields" type="text"></li>
+			<li><label>Client Mobile: </label><input class="fields" type="text" placeholder="optional"></li>
+			<li><input id="staff_submit" type="submit"> <button id="staff_btn"><i class="fas fa-sync-alt"></i> Staff Login</button></i></li>
+		</ul>
+
+		<ul id="staff_login">
+			<li><h3>Login</h3></li>
+			<li><label>Staff Name: </label><input id="staffName" name="staffName" class="fields" type="text"></li>
+			<li><label>Staff Password: </label><input id="staffPsw"  class="fields" type="password"></li>
+			<li><input id="client_submit" type="submit"> <button id="client_btn"><i class="fas fa-sync-alt"></i> Client Login</button></i></li>
+		</ul>
+		
+	</form>  
+	<audio><source src="/definite.mp3" type="audio/mpeg"></audio>
+	<table id="table_left">
+		<tr><td colspan="2" style="background: #292929; color: #FFF; height: 30px"><span style="padding: 5px; line-height: 30px">Chatroom v0.0.1</span><span style="float: right; padding: 5px;">-Powered by Janice Zhong</span></td></tr>
+		<tr><td colspan="2" height="30px">
+				<ul id="users_online">
+					<li><strong>Connecting to: </strong></li>
+				</ul>			
+			</td>
+		</tr>
+		<tr>
+			<td width="100%" style="overflow-y: auto">
+				<ul id="messages">
+					<li id="chatNoticeBoard" >Welcome to chatroom v0.0.1 ! <br>Unconnected customer please be patient, We will shortly get back to you in 5 minutes. Please don't refresh the brower.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr><td colspan='2'>
+			<form id='group_chat' action="">
+			  <ul id='tools'><li><i id='upload_token' class="fas fa-file-upload" ></i><input id='file_uploader' type='file'></li></ul>
+			  <input id="m" autocomplete="off" /><button>Send</button>
+			</form>		
+		</td></tr>		
+	</table>	
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	 crossorigin="anonymous"></script>
+	 <script src="/jquery.fancybox.min.js"></script>
+	<script>
+	$(function(){		
+		  var person_room={};
+		  var roomNO=0;	 
+		  var nickname;
+		  var shortenedName;
+		  var audio=$('audio')[0];
+		  var rooms;		
+		  var socket = io();
+		  
+		  $('#staff_btn').on('click',function(e){
+			e.preventDefault();
+			$('#client_login').hide();
+			$('#staff_login').show();
+			$('.fields').val('');
+		  });
+		
+		  $('#client_btn').on('click',function(e){
+			e.preventDefault();
+			$('#client_login').show();
+			$('#staff_login').hide();
+			$('.fields').val('');
+		  });	
+		  $('#login').submit(function(e){
+				var userExists=false;
+
+				if($('#clientName').val().length>0){
+					var client=$('#clientName').val();
+					shortenedName=client;
+					nickname="Client_"+client;
+				}
+				if($('#staffName').val().length>0){
+					if($('#staffPsw').val()=="zq"){
+						var staff=$('#staffName').val();
+						shortenedName=staff;
+						nickname="Staff_"+staff;						
+					}else{
+						alert('Wrong Password!');
+						return false;
+					}
+				}	
+				
+				socket.emit('getRoomInfo');
+													
+				socket.on('receiveRoomInfo',function(info){
+					/* when form is only submitted once,
+					   prevent 'receiveRoomInfo' event from being triggered twice!!! */
+					if(!userExists){
+					
+						/*Get roomNo & person_room list from Server*/
+						roomNO=info['roomNO'];
+						person_room=info['person_room'];
+						
+						if(person_room[nickname]!== undefined){
+							userExists=true;
+							alert('Username exists!');	
+						}else{
+								$('#login').hide();
+								$('#table_left').show();					
+												
+								/*If there are already room connections*/
+								if(Object.keys(person_room).length!=0){
+									var if_rooms_full=true;
+									var user_connected=false;
+										for(var person in person_room){	
+											console.log('outer loop refreshed .');
+											var conns_in_room=0;
+											if(!user_connected){
+												for(var conn in person_room){	
+													console.log("inner loop: {"+conn+person_room[conn]+"}, Outer loop: {"+person+person_room[person]+"}");
+													if(person_room[conn]==person_room[person]){
+														conns_in_room++;
+														console.log('conns_in_room: '+conns_in_room);										
+													}														
+												}/*Inner loop ends here*/
+												/*If less than 2 ppl in one room, compare their identities*/
+												if(conns_in_room<2){
+													
+													var existedToken=nickname.indexOf('Client_');
+													var JoiningToken=person.indexOf('Client_');
+													
+													/*Only join client and staff*/
+													if(existedToken!=JoiningToken){
+
+														socket.emit('joinRoom',{"person": nickname, "room": person_room[person]});	
+														/*Insert a new item to the list*/
+														person_room[nickname]=person_room[person];
+														socket.emit('updateRoomInfo', person_room);	
+														/*Exclude the possibility that all the rooms are full*/
+														/*Exit the inner loop and the outer loop*/
+														if_rooms_full=false;
+														user_connected=true;
+														break;
+													}
+												}								
+											}else{
+												break;							
+											}
+										}/*Outer loop ends here*/
+										if(if_rooms_full){
+											roomNO++;
+											/*Create a new room*/
+											socket.emit('joinRoom',{"person": nickname, "room": roomNO});
+											/*Insert a new item to the list*/
+											person_room[nickname]=roomNO;
+											socket.emit('updateRoomNO', roomNO);	
+										}
+									/*If there are no room connections*/	
+									}else if(Object.keys(person_room).length==0){
+										roomNO++;
+										/*Create a new room*/
+										socket.emit('joinRoom',{"person": nickname, "room": roomNO});
+										/*Insert a new item to the list*/
+										person_room[nickname]=roomNO;
+										socket.emit('updateRoomNO', roomNO);	
+										if_rooms_full=false;
+									}
+									/*Update person_room list at last*/							
+									socket.emit('updateRoomInfo', person_room);	
+						}
+					}
+				});	
+				
+				/*login form submission return false*/
+				return false;
+		  });
+		 			  
+		  socket.on('chat',function(msg){
+			//append the msg to the screen
+			$('#messages').append($('<li>').html(msg));
+			audio.play();
+			scrollToBottom();	
+		  });
+		  
+		  //{user} typing event
+		  $('#m').on('keydown',function(){
+			if($('#m').val()!=''){
+				socket.emit('user_typing',true);
+			}
+		  });
+		  //{user} off typing event
+		  $('#m').on('keyup',function(){
+			//check if user is typing something
+			if($('#m').val()==''){
+				socket.emit('user_typing',false);
+			}			
+		  });
+		  
+		  socket.on('user_typing',function(msg){
+			var index= msg.indexOf(']');
+			liID=msg.substring(1,index);
+			msg=msg.substring(index+1);		  
+			//make sure there is only one {user} typing msg
+			if($('#'+liID+'').length==0){
+				$('#messages').append($('<li id='+liID+' >').html(msg));
+			}			
+		  });
+		  
+		  socket.on('user_typing_off',function(msg){
+			$('#'+msg+'').remove();
+		  });  
+		  
+		  socket.on('users_online',function(name){
+			$('#users_online').append('<li class="online_user" id=online_'+name+'>'+shortenedName+'</li>');		
+		  });
+		  
+		  socket.on('users_online_delete',function(msg){
+			$('#online_'+msg).remove();
+		  });	
+		  //file uploading
+		  var selectedFile;
+		  var fileName;		
+		  var fileSize;
+		  var fileType;
+		  var FReader=new FileReader();		
+		  var FReader2=new FileReader();	
+		  var extensions=['jpg','jpeg','png','gif','txt','doc','pdf'];
+		  
+		  //file uploading token
+		  $('#upload_token').on('click',function(){
+			$('#file_uploader').click();
+		  });
+		  
+		  //file uploader handler
+		  $('#file_uploader').on('change',function(e){
+			if($('#file_uploader').val()!=""){
+				selectedFile=$(this)[0].files[0];
+				fileName=selectedFile.name;	
+				fileSize=selectedFile.size;
+				fileType=fileName.split('.').pop().toLowerCase();
+				console.log(selectedFile);
+				console.log(fileName);
+				if(extensions.indexOf(fileType)==-1){
+					alert("Only 'jpg','jpeg','png','gif','txt','doc','pdf'");
+				}else{
+					startUpload(e);
+				}	
+				/*let user be able to upload the same file multiple times in a row*/
+				$(this).prop('value', '');
+			}			
+		  });
+		  
+		 
+		  function startUpload(e){				
+			var fileSlice=selectedFile.slice(0,Math.min(100000,fileSize));
+			socket.emit('startUpload',{'name': fileName, 'size': selectedFile.size});
+			FReader.onload=function(e){
+				socket.emit('uploading',{'user': nickname, 'name': fileName, 'size': fileSize, 'data': e.target.result});				
+			}		
+			FReader2.onload=function(e){
+				//check if file is a image
+				if(extensions.indexOf(fileType)>-1 && extensions.indexOf(fileType)<4){		
+					$('#messages').append('<li><button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><a href='+e.target.result+' data-fancybox="'+nickname+'-fancybox-sent"><img class="uploaded_img" src='+e.target.result+'></a></li>');
+					fancyboxConfig();															
+				}else if(extensions.indexOf(fileType)>3){
+					$('#messages').append('<li><button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><br><a href="'+e.target.result+'" download='+fileName+'>'+fileName+'</a></li>');					
+				}	
+				scrollToBottom();			
+			}
+			//This line is needed with FReader.onload
+			FReader.readAsArrayBuffer(fileSlice);
+			FReader2.readAsDataURL(selectedFile);
+		  }
+		  
+		  socket.on('startUpload',function(msg){
+			//append a loading icon
+			$('#messages').append($('<li>').html(msg));
+		  });	  
+		  
+		  socket.on('requestSlice',function(slice){
+			/*Current size has been uploaded, request chrunk unit 100000 bytes */
+			var place=slice*100000;			
+			var fileSlice=selectedFile.slice(place,Math.min(fileSize, (place+100000)));			
+			FReader.onload=function(e){
+				socket.emit('uploading',{'user': nickname, 'name': fileName, 'size': fileSize, 'data': e.target.result});
+			}			
+			FReader.readAsArrayBuffer(fileSlice);
+		  });
+		  
+		  socket.on('uploadDone',function(data){
+			//replace the loading icon with a loaded image
+			//remove id attribute after replacing to avoid error
+			//import fancybox feature, collect all the images the user received as a image gallery
+			var fileType=data['fileName'].split('.').pop().toLowerCase();		
+			if(extensions.indexOf(fileType)>-1 && extensions.indexOf(fileType)<4){
+			
+				/*Link anchor href to  /public/files/ */
+				$('#lds-spinner-'+data['user']).html('<a href="/files/'+data['fileName']+'" data-fancybox="'+data['user']+'-fancybox-received"><img class="uploaded_img" src="/files/'+data['fileName']+'" ></a>').attr('id','');			
+				fancyboxConfig();				
+				
+			}else if(extensions.indexOf(fileType)>3){
+			
+				/*Link anchor href to  /public/files/ */
+				$('#lds-spinner-'+data['user']).html('<a href="/files/'+data['fileName']+'" download>'+data['fileName']+'</a>').attr('id','').css({'width':'50%','height':'30px'});	
+			}
+			audio.play();
+			scrollToBottom();		  
+		  });
+		  function scrollToBottom(){
+			//scroll to the bottom after appending
+			$('#messages').animate({
+				scrollTop: $('#messages')[0].scrollHeight
+			},300);				  
+		  }
+		  function fancyboxConfig(){
+			$("[data-fancybox]").fancybox({
+				buttons : [
+					"share",
+					"download",
+					"close",
+				]
+			});			  
+		  }
+		//find the key in a object array matched with value
+		function findKey(array,value){
+			for(var key in array){
+				if(array[key]==value){
+					return key;
+				}
+			}
+			return false;
+		}		
+	});
+	</script>	
+  </body>
+</html>
