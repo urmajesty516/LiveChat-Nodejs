@@ -51,7 +51,7 @@ body { width: 100%; height: 100%; font-family: "Roboto", sans-serif; font-size: 
 #upload_token {color: #fff;}
 
 #chatNoticeBoard { color: red; font-size: 12px; }
-.uploaded_img {width: auto; height: auto; max-width: 300px;}
+.uploaded_img {width: auto; height: auto; max-width: 200px;}
 
 #messages { list-style-type: none; margin: 0; padding: 0 10px; width: 100%; height: 300px ;max-height: 300px; overflow-y: auto}
 #messages li { padding: 5px 10px; border-bottom: 1px solid #d9d9d9; }
