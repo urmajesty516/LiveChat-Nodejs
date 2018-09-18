@@ -178,7 +178,19 @@
 				/*login form submission return false*/
 				return false;
 		  });
-		 			  
+		  
+		  $('#group_chat').submit(function(){
+			var sending_msg=$('#m').val();
+			//if message bar is not empty
+			if(sending_msg!=""){
+				socket.emit('chat',{'nickname': nickname, 'msg': sending_msg});
+				$('#messages').append($('<li>').html("<button style='background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px;  text-align: center; padding: 3px 5px; font-size: 12px'>"+shortenedName+"</button> "+sending_msg));	
+				scrollToBottom();	
+			}					
+			$('#m').val('');
+			return false;
+		  });
+		  
 		  socket.on('chat',function(msg){
 			//append the msg to the screen
 			$('#messages').append($('<li>').html(msg));
