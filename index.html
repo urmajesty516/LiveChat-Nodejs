@@ -17,14 +17,14 @@
 
 			<ul id="client_login">
 				<li><h3>Login</h3></li>
-				<li><label>Client Name: </label><input id="clientName" name="clientName" class="fields" type="text"></li>
+				<li><label>Client Name: </label><input id="clientName" name="clientName" class="fields" type="text" placeholder="First Name" pattern="[^' '()/<>[\]\\,'|\x22]+"></li>
 				<li><label>Client Mobile: </label><input class="fields" type="text" placeholder="optional"></li>
 				<li><input id="staff_submit" type="submit"> <button id="staff_btn"><i class="fas fa-sync-alt"></i> Staff Login</button></i></li>
 			</ul>
 
 			<ul id="staff_login">
 				<li><h3>Login</h3></li>
-				<li><label>Staff Name: </label><input id="staffName" name="staffName" class="fields" type="text"></li>
+				<li><label>Staff Name: </label><input id="staffName" name="staffName" class="fields" type="text" placeholder="First Name" pattern="[^' '()/<>[\]\\,'|\x22]+"></li>
 				<li><label>Staff Password: </label><input id="staffPsw"  class="fields" type="password"></li>
 				<li><input id="client_submit" type="submit"> <button id="client_btn"><i class="fas fa-sync-alt"></i> Client Login</button></i></li>
 			</ul>
