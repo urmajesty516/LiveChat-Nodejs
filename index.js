@@ -7,6 +7,22 @@ var users={};
 var fs=require('fs');
 var person_room={};
 var roomNO=0;
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'zhongqian516@gmail.com',
+    pass: 'zq960516'
+  }
+});
+
+var mailOptions = {
+  from: 'zhongqian516@gmail.com',
+  to: 'zhongqian516@gmail.com',
+  subject: 'Sending Email using Node.js',
+  text: 'That was easy!'
+};
 
 const port = process.env.PORT || 3000;
 
@@ -44,6 +60,13 @@ io.on('connection',function(socket){
 			users[theOther].emit('users_online',nickname);
 		}else{
 			socket.emit('chat', '<i class="fas fa-volume-up"></i> <span style="color: #a6a6a6; font-size: 12px;">'+name+' has joined the chatroom. Waiting for connection...</span>');
+			transporter.sendMail(mailOptions, function(error, info){
+			  if (error) {
+				console.log(error);
+			  } else {
+				console.log('Email sent: ' + info.response);
+			  }
+			});						
 		}			
 				
 	});
@@ -75,7 +98,12 @@ io.on('connection',function(socket){
 		var room=person_room[data['nickname']];
 		var theOther=findtheOtherKey(person_room, room, data['nickname']);
 		var theOtherSocket=users[theOther];
-		theOtherSocket.emit('chat', "<button style='background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px'>"+name+"</button> "+data['msg']);
+		if(theOtherSocket){
+			theOtherSocket.emit('chat', "<button style='background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px'>"+name+"</button> "+data['msg']);			
+		}else{
+			socket.emit('chat','<i class="fas fa-volume-up"></i> <span style="color: #a6a6a6; font-size: 12px;">Dear customer, our staff will get back to you shortly, please wait for a connection :)</span>');
+		}
+
 	});
 	
 	//{user} typing event
@@ -97,7 +125,13 @@ io.on('connection',function(socket){
 		//this nickname
 		var nickname=findKey(users,socket);
 		var theOther=findtheOtherKey(person_room, person_room[nickname], nickname);	
-		users[theOther].emit('startUpload','<button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+name+'</button><br><div id="lds-spinner-'+nickname+'" class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>');	
+		
+		if(theOther){
+			users[theOther].emit('startUpload','<button style="background: #292929; color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+name+'</button><br><div id="lds-spinner-'+nickname+'" class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>');			
+		}else{
+			socket.emit('chat','<i class="fas fa-volume-up"></i> <span style="color: #a6a6a6; font-size: 12px;">Dear customer, our staff will get back to you shortly, please wait for a connection :)</span>');
+		}
+	
 	});
 	var fileData=[];
 	var slice=0;
