@@ -17,13 +17,6 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-var mailOptions = {
-  from: 'qianzhong516@gmail.com',
-  to: 'zhongqian516@gmail.com',
-  subject: 'Sending Email using Node.js',
-  text: 'That was easy!'
-};
-
 const port = process.env.PORT || 3000;
 
 
@@ -60,6 +53,14 @@ io.on('connection',function(socket){
 			users[theOther].emit('users_online',nickname);
 		}else{
 			socket.emit('chat', '<i class="fas fa-volume-up"></i> <span style="color: #a6a6a6; font-size: 12px;">'+name+' has joined the chatroom. Waiting for connection...</span>');
+			
+			var mailOptions = {
+			  from: 'qianzhong516@gmail.com',
+			  to: 'zhongqian516@gmail.com',
+			  subject: 'LiveChat Info',
+			  text: 'Customer '+name+' has joined the chatroom! Go have a look! <br> <a href="https://immense-scrubland-52584.herokuapp.com/">Online LiveChat</a>'
+			};			
+			
 			transporter.sendMail(mailOptions, function(error, info){
 			  if (error) {
 				console.log(error);
