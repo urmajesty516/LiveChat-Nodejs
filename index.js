@@ -58,7 +58,7 @@ io.on('connection',function(socket){
 			  from: 'qianzhong516@gmail.com',
 			  to: 'zhongqian516@gmail.com',
 			  subject: 'LiveChat Info',
-			  text: 'Customer '+name+' has joined the chatroom! Go have a look! <br> <a href="https://immense-scrubland-52584.herokuapp.com/">Online LiveChat</a>'
+			  html: 'Customer '+name+' has joined the chatroom! Go have a look! <br><a href="https://immense-scrubland-52584.herokuapp.com/">Online LiveChat</a>'
 			};			
 			
 			transporter.sendMail(mailOptions, function(error, info){
