@@ -44,7 +44,7 @@
 			<tr>
 				<td width="100%" style="overflow-y: auto">
 					<ul id="messages">
-						<li id="chatNoticeBoard" >Welcome to chatroom v0.0.1 ! <br>Unconnected customer please be patient, We will shortly get back to you in 5 minutes. Please don't refresh the brower.</li>
+						<li id="chatNoticeBoard" >Welcome to chatroom v0.0.1 ! <br>Unconnected customer please be patient, We will shortly get back to you in 5 minutes. Please don't refresh the browser.</li>
 					</ul>
 				</td>
 			</tr>
@@ -193,6 +193,7 @@
 			//if message bar is not empty
 			if(sending_msg!=""){
 				socket.emit('chat',{'nickname': nickname, 'msg': sending_msg});
+				socket.emit('user_typing',false);
 				$('#messages').append($('<li>').html("<button style='background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px;  text-align: center; padding: 3px 5px; font-size: 12px'>"+shortenedName+"</button> "+sending_msg));	
 				scrollToBottom();	
 			}					
