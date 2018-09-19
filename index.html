@@ -1,52 +1,61 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+	<title>LiveChat</title>
+ 	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes"> 
+    
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link rel="stylesheet" href="/style.css">
-	<link rel="stylesheet" href="/jquery.fancybox.min.css">
+	<link rel="stylesheet" href="/jquery.fancybox.min.css">	
   </head>
   <body>
-	<form id="login" action="/" method="GET">
+	<div id="login-container">
+		<form id="login" action="/" method="GET">
 
-		<ul id="client_login">
-			<li><h3>Login</h3></li>
-			<li><label>Client Name: </label><input id="clientName" name="clientName" class="fields" type="text"></li>
-			<li><label>Client Mobile: </label><input class="fields" type="text" placeholder="optional"></li>
-			<li><input id="staff_submit" type="submit"> <button id="staff_btn"><i class="fas fa-sync-alt"></i> Staff Login</button></i></li>
-		</ul>
+			<ul id="client_login">
+				<li><h3>Login</h3></li>
+				<li><label>Client Name: </label><input id="clientName" name="clientName" class="fields" type="text"></li>
+				<li><label>Client Mobile: </label><input class="fields" type="text" placeholder="optional"></li>
+				<li><input id="staff_submit" type="submit"> <button id="staff_btn"><i class="fas fa-sync-alt"></i> Staff Login</button></i></li>
+			</ul>
 
-		<ul id="staff_login">
-			<li><h3>Login</h3></li>
-			<li><label>Staff Name: </label><input id="staffName" name="staffName" class="fields" type="text"></li>
-			<li><label>Staff Password: </label><input id="staffPsw"  class="fields" type="password"></li>
-			<li><input id="client_submit" type="submit"> <button id="client_btn"><i class="fas fa-sync-alt"></i> Client Login</button></i></li>
-		</ul>
-		
-	</form>  
+			<ul id="staff_login">
+				<li><h3>Login</h3></li>
+				<li><label>Staff Name: </label><input id="staffName" name="staffName" class="fields" type="text"></li>
+				<li><label>Staff Password: </label><input id="staffPsw"  class="fields" type="password"></li>
+				<li><input id="client_submit" type="submit"> <button id="client_btn"><i class="fas fa-sync-alt"></i> Client Login</button></i></li>
+			</ul>
+			
+		</form> 
+	</div>
 	<audio><source src="/definite.mp3" type="audio/mpeg"></audio>
-	<table id="table_left">
-		<tr><td colspan="2" style="background: #292929; color: #FFF; height: 30px"><span style="padding: 5px; line-height: 30px">Chatroom v0.0.1</span><span style="float: right; padding: 5px;">-Powered by Janice Zhong</span></td></tr>
-		<tr><td colspan="2" height="30px">
-				<ul id="users_online">
-					<li><strong>Connecting to: </strong></li>
-				</ul>			
-			</td>
-		</tr>
-		<tr>
-			<td width="100%" style="overflow-y: auto">
-				<ul id="messages">
-					<li id="chatNoticeBoard" >Welcome to chatroom v0.0.1 ! <br>Unconnected customer please be patient, We will shortly get back to you in 5 minutes. Please don't refresh the brower.</li>
-				</ul>
-			</td>
-		</tr>
-		<tr><td colspan='2'>
-			<form id='group_chat' action="">
-			  <ul id='tools'><li><i id='upload_token' class="fas fa-file-upload" ></i><input id='file_uploader' type='file'></li></ul>
-			  <input id="m" autocomplete="off" /><button>Send</button>
-			</form>		
-		</td></tr>		
-	</table>	
+	<div id="table-container">
+		<table id="table_left">
+			<tr><td colspan="2" style="background: #292929; color: #FFF; height: 30px"><span style="padding: 5px; line-height: 30px">Chatroom v0.0.1</span><span style="float: right; padding: 5px;">-Powered by Janice Zhong</span></td></tr>
+			<tr><td colspan="2" height="30px">
+					<ul id="users_online">
+						<li><strong>Connecting to: </strong></li>
+					</ul>			
+				</td>
+			</tr>
+			<tr>
+				<td width="100%" style="overflow-y: auto">
+					<ul id="messages">
+						<li id="chatNoticeBoard" >Welcome to chatroom v0.0.1 ! <br>Unconnected customer please be patient, We will shortly get back to you in 5 minutes. Please don't refresh the brower.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr><td colspan='2'>
+				<form id='group_chat' action="">
+				  <ul id='tools'><li><i id='upload_token' class="fas fa-file-upload" ></i><input id='file_uploader' type='file'></li></ul>
+				  <input id="m" autocomplete="off" /><button>Send</button>
+				</form>		
+			</td></tr>		
+		</table>
+	</div>	
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
 	 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -240,7 +249,7 @@
 		  var fileType;
 		  var FReader=new FileReader();		
 		  var FReader2=new FileReader();	
-		  var extensions=['jpg','jpeg','png','gif','txt','doc','pdf'];
+		  var extensions=['jpg','jpeg','png','gif','txt','doc','pdf','xml','xlsx'];
 		  
 		  //file uploading token
 		  $('#upload_token').on('click',function(){
@@ -257,7 +266,7 @@
 				console.log(selectedFile);
 				console.log(fileName);
 				if(extensions.indexOf(fileType)==-1){
-					alert("Only 'jpg','jpeg','png','gif','txt','doc','pdf'");
+					alert("Only 'jpg','jpeg','png','gif','txt','doc','pdf','xml','xlsx'	");
 				}else{
 					startUpload(e);
 				}	
@@ -276,7 +285,7 @@
 			FReader2.onload=function(e){
 				//check if file is a image
 				if(extensions.indexOf(fileType)>-1 && extensions.indexOf(fileType)<4){		
-					$('#messages').append('<li><button style="background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><a href='+e.target.result+' data-fancybox="'+nickname+'-fancybox-sent"><img class="uploaded_img" src='+e.target.result+'></a></li>');
+					$('#messages').append('<li><button style="background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><br><a href='+e.target.result+' data-fancybox="'+nickname+'-fancybox-sent"><img class="uploaded_img" src='+e.target.result+'></a></li>');
 					fancyboxConfig();															
 				}else if(extensions.indexOf(fileType)>3){
 					$('#messages').append('<li><button style="background: rgb(130, 224, 255); color: #fff; border: none; outline: none; border-radius: 8px; width: 60px; text-align: center; padding: 3px 5px; font-size: 12px; margin-bottom: 5px;">'+shortenedName+'</button><br><a href="'+e.target.result+'" download='+fileName+'>'+fileName+'</a></li>');					

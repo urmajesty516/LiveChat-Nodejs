@@ -1,33 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-@media only screen and (max-width: 600px) {
-	#table-container {
-		width: 100%;
-		padding: 0 10px;
-	}	
-    #table_left {
-       width: 100% !important;
-    }
-	#group_chat input {
-		width: 78% !important;
-	}
-	#tools {
-		width: 25px !important;
-	}
-	#login-container {
-		width: 100%;
-		padding: 0 14px;
-	}
-	#login {
-		width: 100% !important;
-	}
-}
-
 * { margin: 0; padding: 0; box-sizing: border-box;}
-html, body { width: 100%; height: 100%; overflow-x: hidden; }
-body {  font-family: "Roboto", sans-serif; font-size: 14px; line-height: 1.5em}
+body { width: 100%; height: 100%; font-family: "Roboto", sans-serif; font-size: 14px; line-height: 1.5em}
 
-#login { width: 350px; margin: 80px auto; padding: 25px 50px; background: #FFFFFF; box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);}
+#login { width: 350px; margin: 50px auto; padding: 25px 50px; background: #FFFFFF; box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);}
 #login h3 { margin-bottom: 12px}
 #login ul { list-style: none; }
 #login ul li {padding: 5px;}
@@ -61,48 +37,27 @@ body {  font-family: "Roboto", sans-serif; font-size: 14px; line-height: 1.5em}
 #login #staff_login { display: none; }
 
 
-#table_left {border-collapse: collapse; height: 100%; margin: 0 auto; width: 550px; overflow-y: auto; display: none;}
+#table_left {border-collapse: collapse; height: 100%; margin: 0 auto; width: 100%; overflow-y: auto; display: none;}
 #table_left td {vertical-align: 0;}
 
 #group_chat { background: #000; padding: 3px; width: 100%; }
-#group_chat input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
+#group_chat input { border: 0; padding: 10px; width: 85%; margin-right: .5%; }
 #group_chat button { width: 14%; background: rgb(130, 224, 255); border: none; padding: 10px; margin-left: .3%;}
 
 
-#tools { list-style-type: none; margin: 0; padding: 0; width: 5%; float: right;}
-#tools li i {font-size: 30px; line-height: 36px; cursor: pointer; margin-left: 3px;} 
+#tools { list-style-type: none; margin: 0; padding: 0; }
+#tools li i {font-size: 20px; line-height: 36px; cursor: pointer} 
 #tools #file_uploader {display: none}
 #upload_token {color: #fff;}
 
 #chatNoticeBoard { color: red; font-size: 12px; }
-.uploaded_img {width: auto; height: auto; max-width: 300px;}
+.uploaded_img {width: auto; height: auto; max-width: 200px;}
 
-#messages { list-style-type: none; margin: 0; padding: 0 10px; width: 100%; height: 350px ;max-height: 350px; overflow-y: auto}
+#messages { list-style-type: none; margin: 0; padding: 0 10px; width: 100%; height: 300px ;max-height: 300px; overflow-y: auto}
 #messages li { padding: 5px 10px; border-bottom: 1px solid #d9d9d9; }
 #users_online{ list-style-type: none; margin: 0; padding: 0; line-height: 30px}
 #users_online li{  padding: 5px; display: inline-block;}
 .fas .fa-volume-up { color: red}
-
-#messages::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-}
-
-#messages::-webkit-scrollbar
-{
-	width: 12px;
-	background-color: #F5F5F5;
-}
-
-#messages::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #ccc;
-}
-
 
 .lds-spinner {
 color: #292929;
