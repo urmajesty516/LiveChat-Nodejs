@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
 	"express": "v4.16.3",
-	"socket.io": "v2.1.1"
+	"socket.io": "v2.1.1",
 	"nodemailer": "v4.6.8"
   },
   "main": "index.js",
