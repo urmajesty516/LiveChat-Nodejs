@@ -266,7 +266,9 @@
 				console.log(selectedFile);
 				console.log(fileName);
 				if(extensions.indexOf(fileType)==-1){
-					alert("Only 'jpg','jpeg','png','gif','txt','doc','pdf','xml','xlsx'	");
+					alert("Only 'jpg','jpeg','png','gif','txt','doc','pdf','xml','xlsx'	formats are allowed!");
+				}else if(fileSize>=10485760){ //10MB
+					alert('Only filesize less than 10MB is allowed!');
 				}else{
 					startUpload(e);
 				}	
