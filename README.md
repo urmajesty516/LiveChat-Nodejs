@@ -18,7 +18,7 @@ Run index.js:
 
 Access the client(s) via visiting: http://localhost:3000
 
-<h2>Chatroom Functions</h2>
+<h2>LiveChat Functions</h2>
 
 <ul>
   <li>Auto join connections in pair (Client & Staff)</li>
